@@ -7,6 +7,9 @@ Purpose: Main UI Form
 package BookIT;
 
 import java.time.LocalTime;
+
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,15 +19,35 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+
+import java.sql.*;
+import oracle.jdbc.pool.*;
+import java.util.*;
+
 /**
  *
  * @author KP
  */
 public class MainForm extends Application {
     
+
     // created java user to keep open shit 
     String user = "javauser";
     String pass = "javapass";
+
+    // ArrayLists
+    ArrayList<Customer> custArray = new ArrayList<>();
+    ArrayList<Employee> empArray = new ArrayList<>();
+    ArrayList<Manager> manArray = new ArrayList<>();
+    
+    // MY created objects to get login stuff working
+    Customer kpCust = new Customer("Kyle", "Porter", "881 Port Republic Rd.", 
+            "Harrisonburg", "VA", 23456, "5402149556", "porterkc@dukes.jmu.edu", 
+            "custuser", "custpass");
+    Employee kpEmp = new Employee("Kyle", "Porter", "blah Street", "city", "VA", 
+    23456, "555555555", "empuser", "emppass");
+    
+
 
     // login controls
     Label lblUser = new Label("Username:");
@@ -186,6 +209,10 @@ public class MainForm extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+
+        custArray.add(kpCust);
+        empArray.add(kpEmp);
+
         
         cboLoginType.getItems().add("Customer");
         cboLoginType.getItems().add("Employee");
@@ -417,36 +444,58 @@ public class MainForm extends Application {
         
         // Login button action
         btnLogIn.setOnAction(e -> {
+            String user = txtUser.getText();
+            String pass = txtPass.getText();
+            
             // if customer is selected
             if (cboLoginType.getSelectionModel().getSelectedItem() == "Customer")
             {
-                // error check login
-                
-                
-                
-                
-                // if login successful, open customer GUI
-                primaryStage.setScene(custScene);
-                primaryStage.setTitle("Customer Name");
-                primaryStage.show();
+                for (Customer c: custArray)
+                {
+                    if (user.equals(c.getUsername()) & pass.equals(c.getPassword()))
+                    {
+                        // open customer GUI
+                        primaryStage.setScene(custScene);
+                        primaryStage.setTitle(c.getFName() + " " + c.getLName());
+                        primaryStage.show();
+                    }
+                    else
+                    {
+                        Alert loginAlert = new Alert(Alert.AlertType.ERROR);
+                        loginAlert.setContentText("Invalid login credentials");
+                        loginAlert.show();
+                    }
+                }
+
             }
             
             // if employee is selected
             if (cboLoginType.getSelectionModel().getSelectedItem() == "Employee")
             {
-                // error check login
-                
-                
-                
-                // if login successful, open employee GUI
-                primaryStage.setScene(empScene);
-                primaryStage.setTitle("Employee Name");
-                primaryStage.show();
+
+                for (Employee p: empArray)
+                {
+                    if (user.equals(p.getUserName()) & pass.equals(p.getPassword()))
+                    {
+                        // open employee GUI
+                        primaryStage.setScene(empScene);
+                        primaryStage.setTitle(p.getFName() + " " + p.getLName());
+                        primaryStage.show();
+                    }
+                    else
+                    {
+                        Alert loginAlert = new Alert(Alert.AlertType.ERROR);
+                        loginAlert.setContentText("Invalid login credentials");
+                        loginAlert.show();
+                    }
+                }
+
             }
             
             // if management is selected
             if (cboLoginType.getSelectionModel().getSelectedItem() == "Management")
             {
+
                 // error check login
                 
                 
@@ -455,7 +504,7 @@ public class MainForm extends Application {
                 primaryStage.setScene(overallScene);
                 primaryStage.setTitle("Manager Name");
                 primaryStage.show();
-                
+
             }
             
         });

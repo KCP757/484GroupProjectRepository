@@ -1,3 +1,4 @@
+
 /*
 Author: Kyle Porter
 Date: 6/21/17
@@ -157,3 +158,4 @@ public class Member {
     }
     
 }
+
